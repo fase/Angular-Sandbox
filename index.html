@@ -8,7 +8,7 @@
 </head>
 <body>
 <div ng-controller="AccountCtrl">
-    {{accountResult}}
+    <li ng-repeat="account in accountResults">{{account.name.first}} {{account.name.last}} ({{accountResults[0].email}})</li>
 </div>
 </body>
 </html>

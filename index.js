@@ -1,10 +1,15 @@
 angular.module('accountApp', ['ngResource']);
 
 function AccountCtrl($scope, $resource) {
-    var url = 'http://search.twitter.com/search.json?q=';
-    $scope.account = $resource(url,
-        {callback:'JSON_CALLBACK'},
-        {get:{method:'JSONP'}});
+    var url = "http://localhost\\:3000/accounts/user@domain_0002.com"
 
-    $scope.accountResult = $scope.account.get();
+    $scope.account = $resource(url,
+        { callback:'JSON_CALLBACK' },
+        {
+            get: { method:'JSONP', isArray : true }
+        });
+
+    $scope.account.get(function(result) {
+        $scope.accountResults = result;
+    });
 }
