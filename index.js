@@ -1,13 +1,10 @@
-angular.module('restTest', ['ngResource']);
+angular.module('accountApp', ['ngResource']);
 
 function AccountCtrl($scope, $resource) {
-    $scope.name = 'Jim';
+    var url = 'http://search.twitter.com/search.json?q=';
+    $scope.account = $resource(url,
+        {callback:'JSON_CALLBACK'},
+        {get:{method:'JSONP'}});
 
-    $scope.accountService = $resource('http://127.0.0.1\\:3000/accounts/:email',
-        { email: 'user@domain_0001.com', callback:'JSON_CALLBACK' },
-        { get:{method:'JSONP'}});
-
-    $scope.account = $scope.accountService.get(function(result) {
-        console.log(result);
-    });
+    $scope.accountResult = $scope.account.get();
 }
