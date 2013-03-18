@@ -1,0 +1,1 @@
+var app = app.module('ng-slider', []);

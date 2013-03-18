@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Slider</title>
+    <style type="text/css">
+        div { border: solid 5px red; }
+    </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+</head>
+<body ng-app="ng-slider">
+    <span ng-controller="SliderCtrl">
+
+        <slider>
+            <img src="images/cat1.jpg">
+            <img src="images/cat2.jpg">
+            <img src="images/cat3.jpg">
+            <img src="images/cat4.jpg">
+            <img src="images/cat5.jpg">
+        </slider>
+    </span>
+
+    <script type="text/javascript">
+        var app = angular.module('ng-slider', []);
+
+        var SliderCtrl = function($scope, $timeout) {
+            var offset = 0;
+            var goLeft = true;
+
+            $scope.moveIt = function() {
+
+                $timeout(function moveIt(){
+
+                    if(goLeft) {
+                        offset -= 2;
+
+                        goLeft = (0 - offset) < $scope.combinedImageWidth - $scope.containerWidth;
+
+                    } else {
+                        offset += 2;
+
+                        goLeft = (offset == 0);
+
+                    }
+
+                    var index = 0;
+
+                    _.each($scope.images, function(image) {
+                        image.style.left = (offsets[index++] + offset) + 'px';
+                    });
+
+                    $scope.moveIt();
+                }, 50);
+
+            };
+
+            $scope.positionImages = function() {
+                var offset = 0;
+                $scope.combinedImageWidth = 0;
+
+                offsets = [];
+
+                _.each($scope.images, function(image) {
+                    offsets.push(offset);
+
+                    image.style.position = 'absolute';
+                    image.style.top = '0px';
+
+                    image.style.left = offset + 'px';
+                    image.style.display = 'inline';
+
+                    offset += image.clientWidth;
+
+                    $scope.combinedImageWidth += image.clientWidth;
+                });
+
+                $scope.moveIt();
+            };
+
+        };
+
+        var slider = app.directive('slider', function($timeout) {
+            return {
+                restrict: 'E',
+                template: '<div class="slider" style="width: {{containerWidth}}px; height: {{containerHeight}}px; overflow: hidden; position:relative;" ng-transclude></div>',
+                transclude: true,
+                link: function($scope, element, attribs) {
+                    $scope.containerWidth = attribs.width || 900;
+                    $scope.containerHeight = attribs.height || 250;
+
+                    $scope.images = element.find('img');
+
+                    $timeout($scope.positionImages, 100);
+                }
+            };
+        });
+    </script>
+</body>
+</html>
